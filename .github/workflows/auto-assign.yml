@@ -1,0 +1,37 @@
+name: Auto Assign
+
+on:
+  issues:
+    types: [opened]
+  pull_request:
+    types: [opened]
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: write
+      pull-requests: write
+    steps:
+      - name: 'Github Issues'
+        uses: actions/github-script@v6
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const issue = github.context.payload.issue;
+            const labels = issue.labels.map(label => label.name);
+            
+            let assignee = 'Teemsploit';
+            
+            if (labels.includes('frontend')) {
+              assignee = 'indexxing';
+            } else if (labels.includes('backend')) {
+              assignee = 'TeemSucks';
+            }
+
+            await github.rest.issues.addAssignees({
+              owner: github.context.repo.owner,
+              repo: github.context.repo.repo,
+              issue_number: issue.number,
+              assignees: [assignee]
+            });
