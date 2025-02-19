@@ -1,12 +1,9 @@
-name: Update Server Status
+name: Server Status
 
 on:
   schedule:
     - cron: "0 * * * *"  # Runs every hour
   workflow_dispatch:  # Allows manual trigger
-
-permissions:
-  contents: write
 
 jobs:
   check-status:
@@ -19,38 +16,7 @@ jobs:
       - name: Check Server Status
         run: |
           if curl -Is https://bipbop.bopimod.com | head -n 1 | grep "200"; then
-            echo '{"schemaVersion": 1, "label": "Server Status", "message": "Up", "color": "green"}' > server-status.json
+            exit 0
           else
-            echo '{"schemaVersion": 1, "label": "Server Status", "message": "Down", "color": "red"}' > server-status.json
+            exit 1
           fi
-
-      - name: Upload Status as Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: server-status
-          path: server-status.json
-          retention-days: 1
-
-      - name: Configure Git
-        run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
-          git config pull.rebase false
-
-      - name: Push server status to GitHub Pages
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          git fetch origin gh-pages || git checkout -b gh-pages origin/gh-pages
-
-          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git
-
-          git pull origin gh-pages --allow-unrelated-histories
-
-          mkdir -p public/status
-          mv server-status.json public/status/
-
-          git add public/status/server-status.json
-          git commit -m "Update server status"
-
-          git push origin gh-pages
