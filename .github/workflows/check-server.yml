@@ -1,0 +1,26 @@
+name: Update Server Status
+
+on:
+  schedule:
+    - cron: "0 * * * *"  # Runs every hour
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  check-status:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check Server Status
+        run: |
+          if curl -Is https://bipbop.bopimod.com | head -n 1 | grep "200"; then
+            echo '{"schemaVersion": 1, "label": "Server Status", "message": "Up", "color": "green"}' > server-status.json
+          else
+            echo '{"schemaVersion": 1, "label": "Server Status", "message": "Down", "color": "red"}' > server-status.json
+          fi
+
+      - name: Upload Status as Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: server-status
+          path: server-status.json
+          retention-days: 1
