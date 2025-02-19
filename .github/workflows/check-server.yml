@@ -45,7 +45,7 @@ jobs:
 
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git
 
-          git pull origin gh-pages --allow-unrelated-histories
+          git pull origin gh-pages --allow-unrelated-histories --force
 
           mkdir -p public/status
           mv server-status.json public/status/
