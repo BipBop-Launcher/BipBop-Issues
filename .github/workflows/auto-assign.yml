@@ -13,17 +13,21 @@ jobs:
       issues: write
       pull-requests: write
     steps:
-      - name: 'Github Issues'
+      - name: 'GitHub Issues Auto-Assign'
         uses: actions/github-script@v6
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const item = github.context.payload.issue || github.context.payload.pull_request;
+            const item = context.payload.issue || context.payload.pull_request;
+            
             if (!item) {
-              console.log('No issue or pull request found in the context');
+              console.log("No issue or pull request found in the context. Exiting.");
               return;
             }
-            const labels = item.labels.map(label => label.name);
+
+            console.log("Issue/PR Found:", JSON.stringify(item, null, 2));
+
+            const labels = item.labels ? item.labels.map(label => label.name) : [];
             
             let assignee = 'Teemsploit';
             
@@ -32,10 +36,10 @@ jobs:
             } else if (labels.includes('backend')) {
               assignee = 'TeemSucks';
             }
-          
-            await github.rest.issues.addAssignees({
-              owner: github.context.repo.owner,
-              repo: github.context.repo.repo,
+
+            await octokit.rest.issues.addAssignees({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
               issue_number: item.number,
               assignees: [assignee]
             });
