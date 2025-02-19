@@ -25,9 +25,6 @@ jobs:
           path: server-status.json
           retention-days: 1
 
-      - name: Set up Git
-        uses: actions/setup-git@v2
-
       - name: Push server status to GitHub Pages
         run: |
           git config --global user.name "GitHub Actions"
