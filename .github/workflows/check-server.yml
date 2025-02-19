@@ -47,7 +47,7 @@ jobs:
           mkdir -p public/status
           mv server-status.json public/status/
 
-          git add public/status/server-status.json
+          git add .
           git commit -m "Update server status"
 
           git push origin gh-pages
