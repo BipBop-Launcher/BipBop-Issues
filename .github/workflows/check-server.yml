@@ -24,3 +24,26 @@ jobs:
           name: server-status
           path: server-status.json
           retention-days: 1
+
+      - name: Set up Git
+        uses: actions/setup-git@v2
+
+      - name: Push server status to GitHub Pages
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          
+          # Clone the gh-pages branch
+          git fetch origin gh-pages
+          git checkout gh-pages
+          
+          # Create directory for the status file and move it there
+          mkdir -p public/status
+          mv server-status.json public/status/
+          
+          # Add and commit the changes
+          git add public/status/server-status.json
+          git commit -m "Update server status"
+          
+          # Push the changes to the gh-pages branch
+          git push origin gh-pages
