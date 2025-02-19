@@ -34,13 +34,20 @@ jobs:
           git config --global user.email "actions@github.com"
 
       - name: Push server status to GitHub Pages
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git fetch origin gh-pages || git checkout --orphan gh-pages
 
+          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
+
+          # Move the server-status.json file into the public directory or the desired folder
           mkdir -p public/status
           mv server-status.json public/status/
 
+          # Add and commit the changes
           git add public/status/server-status.json
           git commit -m "Update server status"
 
+          # Push the changes to the gh-pages branch
           git push origin gh-pages
