@@ -18,8 +18,12 @@ jobs:
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           script: |
-            const issue = github.context.payload.issue;
-            const labels = issue.labels.map(label => label.name);
+            const item = github.context.payload.issue || github.context.payload.pull_request;
+            if (!item) {
+              console.log('No issue or pull request found in the context');
+              return;
+            }
+            const labels = item.labels.map(label => label.name);
             
             let assignee = 'Teemsploit';
             
@@ -28,10 +32,10 @@ jobs:
             } else if (labels.includes('backend')) {
               assignee = 'TeemSucks';
             }
-
+          
             await github.rest.issues.addAssignees({
               owner: github.context.repo.owner,
               repo: github.context.repo.repo,
-              issue_number: issue.number,
+              issue_number: item.number,
               assignees: [assignee]
             });
