@@ -5,6 +5,9 @@ on:
     - cron: "0 * * * *"  # Runs every hour
   workflow_dispatch:  # Allows manual trigger
 
+permissions:
+  contents: write
+
 jobs:
   check-status:
     runs-on: ubuntu-latest
@@ -39,15 +42,12 @@ jobs:
         run: |
           git fetch origin gh-pages || git checkout --orphan gh-pages
 
-          git remote set-url origin https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git
+          git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git
 
-          # Move the server-status.json file into the public directory or the desired folder
           mkdir -p public/status
           mv server-status.json public/status/
 
-          # Add and commit the changes
           git add public/status/server-status.json
           git commit -m "Update server status"
 
-          # Push the changes to the gh-pages branch
           git push origin gh-pages
