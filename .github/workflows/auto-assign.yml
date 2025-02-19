@@ -37,7 +37,7 @@ jobs:
               assignee = 'TeemSucks';
             }
 
-            await octokit.rest.issues.addAssignees({
+            await github.rest.issues.addAssignees({
               owner: context.repo.owner,
               repo: context.repo.repo,
               issue_number: item.number,
