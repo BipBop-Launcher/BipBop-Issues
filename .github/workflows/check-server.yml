@@ -44,10 +44,12 @@ jobs:
 
           git remote set-url origin https://x-access-token:${GH_TOKEN}@github.com/${{ github.repository }}.git
 
+          git pull origin gh-pages
+
           mkdir -p public/status
           mv server-status.json public/status/
 
           git add public/status/server-status.json
           git commit -m "Update server status"
 
-          git push origin gh-pages --force
+          git push origin gh-pages
