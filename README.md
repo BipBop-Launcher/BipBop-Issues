@@ -1,3 +1,4 @@
+![Server Status](https://img.shields.io/endpoint?url=https://bipbop-launcher.github.io/BipBop-Issues/public/status/server-status.json)
 # BipBop Issues Tracker
 
 Welcome to the official issue tracker for **BipBop Launcher**! This repository is dedicated to reporting and tracking bugs, feature requests, and other issues related to the launcher.
